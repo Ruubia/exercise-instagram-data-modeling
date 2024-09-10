@@ -7,31 +7,56 @@ from eralchemy2 import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
-    id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+PostSalved = Table("posts_salved", Base.metadata,
+    Column("id", Integer, primary_key=True),
+    Column("posts_id", Integer, ForeignKey("posts.id")),
+    Column("users_id", Integer, ForeignKey("users.id"))
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class User(Base):
+    __tablename__ = 'users'
+    
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    first_name = Column(String(250), nullable=False)
+    last_name = Column(String(250), nullable=False)
+    email = Column(String(250), nullable=False)
+    password = Column(String(250), nullable=False)
+    user_name = Column(String(250), nullable=False)
+    phone = Column(Integer, nullable=False)
+    birthdate = Column(DateTime, nullable=False)
+    posts = relationship('Post', backref='users', lazy=True)
+    stories = relationship('stories', backref='users', lazy=True)
 
-    def to_dict(self):
-        return {}
+class Post(Base):
+    __tablename__ = 'posts'
+
+    id = Column(Integer, primary_key=True)
+    title = Column(String(250), nullable=False)
+    date = Column(DateTime, nullable=False)
+    hour = Column(DateTime, nullable=False)
+    content = Column(String(250), nullable=False)
+    multimedia = Column(String(250), nullable=False)
+    label = Column(Integer, nullable=False)
+    hastag = Column(DateTime, nullable=False)
+    users_ID = Column(Integer, ForeignKey("users.id"))
+    posts_salved = relationship('User', secondary=PosSalved, lazy="subquery", backref=backref('posts', lazy=True))
+
+
+class Story(Base):
+    __tablename__ = 'stories'
+    
+    id = Column(Integer, primary_key=True)
+    title = Column(String(250), nullable=False)
+    date = Column(DateTime, nullable=False)
+    hour = Column(DateTime, nullable=False)
+    content = Column(String(250), nullable=False)
+    multimedia = Column(String(250), nullable=False)
+    label = Column(Integer, nullable=False)
+    hastag = Column(DateTime, nullable=False)
+    Users_ID = Column(Integer, ForeignKey("users.id"))
+
+
+
 
 ## Draw from SQLAlchemy base
-try:
-    result = render_er(Base, 'diagram.png')
-    print("Success! Check the diagram.png file")
-except Exception as e:
-    print("There was a problem genering the diagram")
-    raise e
+render_er(Base, 'diagram.png')
+
