@@ -24,7 +24,7 @@ class User(Base):
     phone = Column(Integer, nullable=False)
     birthdate = Column(DateTime, nullable=False)
     posts = relationship('Post', backref='users', lazy=True)
-    stories = relationship('stories', backref='users', lazy=True)
+    stories = relationship('Stories', backref='users', lazy=True)
 
 class Post(Base):
     __tablename__ = 'posts'
@@ -36,7 +36,7 @@ class Post(Base):
     content = Column(String(250), nullable=False)
     multimedia = Column(String(250), nullable=False)
     label = Column(Integer, nullable=False)
-    hastag = Column(DateTime, nullable=False)
+    hastag = Column(String(250), nullable=False)
     users_ID = Column(Integer, ForeignKey("users.id"))
     posts_salved = relationship('User', secondary=PostSalved, lazy="subquery", backref=backref('posts', lazy=True))
 
