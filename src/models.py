@@ -1,7 +1,7 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Table
+from sqlalchemy.orm import relationship, declarative_base, backref
 from sqlalchemy import create_engine
 from eralchemy2 import render_er
 
@@ -10,7 +10,7 @@ Base = declarative_base()
 PostSalved = Table("posts_salved", Base.metadata,
     Column("id", Integer, primary_key=True),
     Column("posts_id", Integer, ForeignKey("posts.id")),
-    Column("users_id", Integer, ForeignKey("users.id"))
+    Column("users_id", Integer, ForeignKey("users.id")))
 
 class User(Base):
     __tablename__ = 'users'
@@ -38,7 +38,7 @@ class Post(Base):
     label = Column(Integer, nullable=False)
     hastag = Column(DateTime, nullable=False)
     users_ID = Column(Integer, ForeignKey("users.id"))
-    posts_salved = relationship('User', secondary=PosSalved, lazy="subquery", backref=backref('posts', lazy=True))
+    posts_salved = relationship('User', secondary=PostSalved, lazy="subquery", backref=backref('posts', lazy=True))
 
 
 class Story(Base):
